@@ -118,6 +118,7 @@ STATIC_URL = 'static/'
 
 INSTALLED_APPS = [
     "polls.apps.PollsConfig",
+    "main.apps.MainConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
