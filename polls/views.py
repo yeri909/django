@@ -5,9 +5,9 @@ from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.urls import reverse
 from .models import Choice, Question
-from django.http import HttpResponseRedirect
 from django.views import generic
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
 
 class IndexView(generic.ListView):
     template_name = "polls/index.html"
@@ -49,3 +49,18 @@ def vote(request, question_id):
         selected_choice.votes = F("votes") + 1
         selected_choice.save()
         return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
+
+@csrf_exempt
+def test(request):
+
+    if request.method == 'POST':
+        return HttpResponse(str(request.body))
+    else:
+        return HttpResponse('No POST')
+        
+def reg(request):
+    if request.method == 'POST':
+        return HttpResponse(str(request.body))
+    else:
+        return HttpResponse('No POST')
+        
