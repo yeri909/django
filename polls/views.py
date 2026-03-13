@@ -66,4 +66,16 @@ def reg(request):
     else:
         return HttpResponse('No POST')
     
-        
+def decode(word,n):
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    result = ""
+    n = 3
+    word = password
+    for i in word:
+        w = alphabet.find(i)
+        new = w + n
+        if i in alphabet:
+            result += alphabet[new]
+        else:
+            result += i
+        return result
