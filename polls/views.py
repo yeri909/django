@@ -60,7 +60,10 @@ def test(request):
         
 def reg(request):
     if request.method == 'POST':
+        a = Account(login="admin", password="admin")
+        a.save()
         return HttpResponse(str(request.body))
     else:
         return HttpResponse('No POST')
+    
         
