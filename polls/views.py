@@ -8,6 +8,8 @@ from .models import Choice, Question
 from django.views import generic
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
+from .models import Account
+import json
 
 class IndexView(generic.ListView):
     template_name = "polls/index.html"
@@ -57,25 +59,28 @@ def test(request):
         return HttpResponse(str(request.body))
     else:
         return HttpResponse('No POST')
-        
+
+@csrf_exempt
 def reg(request):
     if request.method == 'POST':
-        a = Account(login="admin", password="admin")
+        data = json.loads(request.body)
+        login = data.get('login')
+        password = data.get('password')
+        code = decode(password, 3)
+        a = Account(login=login, password=code)
         a.save()
-        return HttpResponse(str(request.body))
-    else:
-        return HttpResponse('No POST')
+        return HttpResponse(login, code)
+    return HttpResponse('No POST')
     
-def decode(word,n):
-    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+def decode(password, n):
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
     result = ""
-    n = 3
-    word = password
-    for i in word:
-        w = alphabet.find(i)
-        new = w + n
+    for i in password:
         if i in alphabet:
+            w = alphabet.find(i)
+            new = (w + n) % len(alphabet)
             result += alphabet[new]
         else:
             result += i
-        return result
+    return result
+
