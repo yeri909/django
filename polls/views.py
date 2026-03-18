@@ -1,6 +1,6 @@
 from django.http import Http404
 from django.db.models import F
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.urls import reverse
@@ -84,3 +84,21 @@ def decode(password, n):
             result += i
     return result
 
+@csrf_exempt
+def acc(request):
+    accounts = Account.objects.all()
+    return JsonResponse(list(accounts.values()), safe=False)
+
+@csrf_exempt
+def acc_id(request, account_id):
+    acc = get_object_or_404(Account, pk=account_id)
+    if request.method == 'DELETE':
+        acc = Account.objects.filter(pk=account_id).delete()
+        return HttpResponse(account_id)
+    elif request.method == 'PATCH':
+        data = json.loads(request.body)
+        acc.login = data.get('login', acc.login)
+        acc.password = data.get('password', acc.password)
+        acc.save()
+        return HttpResponse(f"{acc.login} {acc.password}")
+    return HttpResponse(f"{acc.login} {acc.password}")
